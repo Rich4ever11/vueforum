@@ -1,16 +1,4 @@
 import store from "@/store";
-
-import Home from "@/pages/Home.vue";
-import Thread from "@/pages/Thread.vue";
-import ThreadCreate from "@/pages/ThreadCreate.vue";
-import ThreadEdit from "@/pages/ThreadEdit.vue";
-import Forum from "@/pages/Forum.vue";
-import Category from "@/pages/Category.vue";
-import Profile from "@/pages/Profile.vue";
-import Register from "@/pages/Register.vue";
-import Login from "@/pages/Login.vue";
-import NotFound from "@/pages/NotFound.vue";
-
 import { createRouter, createWebHistory } from "vue-router";
 import { findById } from "@/helpers";
 
@@ -18,20 +6,21 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: () => import(/* webpackChunkName: "Home" */ "@/pages/Home"),
     props: true,
   },
   {
     path: "/register",
     name: "Register",
-    component: Register,
+    component: () =>
+      import(/* webpackChunkName: "Register" */ "@/pages/Register"),
     props: true,
     meta: { requiresGuest: true },
   },
   {
     path: "/login",
     name: "Login",
-    component: Login,
+    component: () => import(/* webpackChunkName: "Login" */ "@/pages/Login"),
     props: true,
     meta: { requiresGuest: true },
   },
@@ -67,14 +56,16 @@ const routes = [
   {
     path: "/forum/:forumId/thread/create",
     name: "ThreadCreate",
-    component: ThreadCreate,
+    component: () =>
+      import(/* webpackChunkName: "ThreadCreate" */ "@/pages/ThreadCreate"),
     props: true,
     meta: { requiresAuth: true },
   },
   {
     path: "/thread/:id/edit",
     name: "ThreadEdit",
-    component: ThreadEdit,
+    component: () =>
+      import(/* webpackChunkName: "ThreadEdit" */ "@/pages/ThreadEdit"),
     props: true,
     meta: { requiresAuth: true },
   },
@@ -87,27 +78,31 @@ const routes = [
   {
     path: "/category/:id",
     name: "Category",
-    component: Category,
+    component: () =>
+      import(/* webpackChunkName: "Category" */ "@/pages/Category"),
     props: true,
   },
   {
     path: "/me",
     name: "Profile",
-    component: Profile,
+    component: () =>
+      import(/* webpackChunkName: "Profile" */ "@/pages/Profile"),
     props: true,
     meta: { toTop: true, smoothScroll: true, requiresAuth: true },
   },
   {
     path: "/me/edit",
     name: "ProfileEdit",
-    component: Profile,
+    component: () =>
+      import(/* webpackChunkName: "Profile" */ "@/pages/Profile"),
     props: { edit: true },
     meta: { requiresAuth: true },
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: NotFound,
+    component: () =>
+      import(/* webpackChunkName: "NotFound" */ "@/pages/NotFound"),
     props: true,
   },
 ];
@@ -129,7 +124,7 @@ router.afterEach(() => {
   });
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   await store.dispatch("initAuthentication");
   store.dispatch("unsubscribeAllSnapshots");
   if (to.meta.requiresAuth && !store.state.authId) {
