@@ -13,13 +13,14 @@
             name="reauth-email"
             label="Email"
             v-model="email"
-            id="email"
+            id="reauth-email"
             type="email"
             class="form-input"
             :rules="{
-              required: true,
               email: true,
             }"
+            :modelValue="modelValue"
+            @input="$emit('modelUpdate', $event)"
           />
           <VeeErrorMessage name="reauth-email" class="form-error" />
         </div>
@@ -30,10 +31,11 @@
             name="reauth-password"
             label="Password"
             v-model="password"
-            id="password"
+            id="reauth-password"
             type="password"
             class="form-input"
-            :rules="{ required: true }"
+            :modelValue="modelValue"
+            @input="$emit('modelUpdate', $event)"
           />
           <VeeErrorMessage name="reauth-password" class="form-error" />
         </div>
@@ -45,16 +47,10 @@
 
 <script>
 import { VueFinalModal } from "vue-final-modal";
-
 export default {
-  components: {
-    VueFinalModal,
-  },
+  components: { VueFinalModal },
   props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
+    modelValue: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -81,7 +77,7 @@ export default {
         });
         this.$emit("success");
       } catch (error) {
-        this.$emit("failed", error);
+        this.$emit("fail", error);
       }
     },
   },
